@@ -1,0 +1,37 @@
+---
+- name: run the playbook tasks on the localhost
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  tasks:
+      - name: print out the hostname of target
+        command: hostname
+        register: output
+        
+      - debug:
+          var: output.stdout
+      
+      - name: install packages
+        apt:
+            pkg:
+                - python3
+                - postgresql
+                - redis 
+            state: present
+      - name: install pip packages
+        pip:
+            name:
+                - jupyter
+                - numpy
+                - pandas
+                - ipython
+            executable: pip3
+
+      - name: install vscode, vlc
+        snap:
+            name: "{{item}}"
+            state: present
+        with_items:
+            - vlc
+            - vscode
+        
